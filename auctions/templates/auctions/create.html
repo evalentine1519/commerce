@@ -1,0 +1,17 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+{% if message %}
+    <h1>{{ message }}</h1>
+{% endif %}
+
+<form action="" method="POST" id="formauction">
+    {% csrf_token %}
+    {{ auctionform.as_p }}
+
+    <input type="hidden" name="form_type" value="form_auction">
+    <input type="submit" value="Post your auction">
+</form>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+{% load dict_lookup %}
+
+{% block body %}
+    <h2>{{ heading }}{{ catname }}</h2>
+
+    <ul>
+        {% for auction in auctions %}
+        {% if auction.is_open %}
+        <li>
+            {% if auction.image %}
+            <img src="{{ auction.image }}">
+            {% endif %}
+            Title: <a href="{% url 'auction' auction.id %}">{{ auction }}</a>,
+            Category: {{ auction.category }}, Description: {{ auction.description }}, Current bid: {{ bid_table|dict_lookup:auction.title }}</li>
+        {% endif %}
+        {% endfor %}
+    </ul>
+
+    {{ auctionform.as_p }}
+{% endblock %}

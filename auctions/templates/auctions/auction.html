@@ -1,0 +1,75 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+
+{% if message %}
+<h1>{{ message }}</h1>
+{% endif %}
+
+
+{% if auction.is_open %}
+    {% if is_owner %}
+        <form action="" method="POST" id="formclose">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="form_close">
+            <input type="submit" value="Close this auction.">
+        </form>
+    {% endif %}
+
+{% if user.is_authenticated %}
+    {% if not on_watchlist %}
+        <form action="{% url 'watchlist' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="auction_id" value="{{ auction.id }}">
+            <input type="hidden" name="action" value="add">
+            <input type="submit" value="Add this auction to your watch list">
+        </form>
+    {% endif %}
+    {% if on_watchlist %}
+        <form action="{% url 'watchlist' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="auction_id" value="{{ auction.id }}">
+            <input type="hidden" name="action" value="remove">
+            <input type="submit" value="Remove this item from your watchlist.">
+        </form>
+    {% endif %}
+{% endif %}
+
+<h1>Auction title: {{ auction.title }}</h1>
+
+{% if auction.image %}
+    <img src="{{ auction.image }}">
+{% endif %}
+
+<h2>Auction owner: {{ auction.owner }}</h2>
+<h3>Starting bid: {{ auction.starting_bid }}</h3>
+<h4>Current bid: {{ current_bid }}</h4>
+<p>Description: {{ auction.description }}</p>
+
+<form action="" method="POST" id="formbid">
+    {% csrf_token %}
+    {{ bidform.as_p }}
+    <input type="hidden" name="form_type" value="form_bid">
+    <input type="submit" value="Submit your bid">
+</form>
+
+<h5>
+    <h4>Add a comment:
+    <form action="" method="POST" id="formcomment">
+        {% csrf_token %}
+        {{ commentform.as_p }}
+
+        <input type="hidden" name="form_type" value="form_comment">
+        <input type="submit" value="Post a comment">
+    </form>
+{% endif %}
+
+    <ul>Comments:
+        {% for comment in comments %}
+            <li>{{ comment }} by {{ comment.user }}</li>
+        {% empty %}
+            <li>No comments</li>
+        {% endfor %}
+    </ul>
+</h5>
+{% endblock %}
